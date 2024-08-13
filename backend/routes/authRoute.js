@@ -1,5 +1,10 @@
 const express = require("express");
-const registerController = require("../controllers/authController");
+const {
+  registerController,
+  loginController,
+  testController,
+} = require("../controllers/authController");
+const { requireSignIn, isAdmin } = require("../middlewares/authMiddleware");
 
 //router object
 const router = express.Router();
@@ -7,6 +12,8 @@ const router = express.Router();
 //routing
 //REGISTER || METHOD POST
 router.post("/register", registerController);
+router.post("/login", loginController);
+router.get("/test", requireSignIn, isAdmin, testController);
 
 // export default router;
 module.exports = router;

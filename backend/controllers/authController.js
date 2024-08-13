@@ -1,6 +1,8 @@
 const { z } = require("zod");
 const userModel = require("../models/userModel");
-const { hashPassword } = require("../helpers/authHelper");
+require("dotenv").config();
+const { hashPassword, comparePassword } = require("../helpers/authHelper");
+const jwt = require("jsonwebtoken");
 
 const registerController = async (req, res) => {
   try {
@@ -44,7 +46,29 @@ const registerController = async (req, res) => {
     }
 
     //register user
-    const MyhashedPassword = await hashPassword(password);
+    const match = await hashPassword(password, user.password);
+    if (!match) {
+      return res.status(200).send({
+        success: false,
+        message: "Invalid Password",
+      });
+    }
+
+    //token
+    const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECERT, {
+      expiresIn: "7d",
+    });
+    res.status(200).send({
+      success: true,
+      message: "login successful",
+      user: {
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+      },
+      token,
+    });
 
     //save
     const user = await new userModel({
@@ -70,4 +94,64 @@ const registerController = async (req, res) => {
   }
 };
 
-module.exports = registerController;
+const loginController = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    //validation for blank data
+    if (!email || !password) {
+      return res.status(404).send({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+
+    //check user
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "Email is not registered",
+      });
+    }
+
+    //match password
+    const match = await comparePassword(password, user.password);
+    if (!match) {
+      return res.status(200).send({
+        success: false,
+        message: "Invalid Password",
+      });
+    }
+
+    //token
+
+    const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+    res.status(200).send({
+      success: true,
+      message: "login successfully",
+      user: {
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+      },
+      token,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error in Login",
+      error,
+    });
+  }
+};
+
+const testController = async (req, res) => {
+  res.send("protect route");
+};
+
+module.exports = { registerController, loginController, testController };
