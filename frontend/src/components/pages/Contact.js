@@ -3,7 +3,7 @@ import Layout from "../Layout/Layout";
 
 const Contact = () => {
   return (
-    <Layout>
+    <Layout title={"Contact Us"}>
       <div class="max-auto border h-[100%] grid lg:grid-cols-2 gap-2">
         <div className="col-span-1 flex items-center justify-center   ">
           <img
