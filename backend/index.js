@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const connectDb = require("./config/db");
 const morgon = require("morgan");
 const authrouter = require("./routes/authRoute");
+const cors = require("cors");
 
 //configure env
 dotenv.config();
@@ -16,6 +17,7 @@ const app = express();
 //middlewares
 app.use(express.json());
 app.use(morgon("dev"));
+app.use(cors());
 
 //PORT
 const PORT = process.env.PORT;

@@ -8,15 +8,15 @@ const registerController = async (req, res) => {
   try {
     const { name, email, password, phone, address } = req.body;
     if (!name) {
-      return res.send({ error: "Name is Required" });
+      return res.send({ message: "Name is Required" });
     } else if (!email) {
-      return res.send({ error: "Email is Required" });
+      return res.send({ message: "Email is Required" });
     } else if (!password) {
-      return res.send({ error: "password is Required" });
+      return res.send({ message: "password is Required" });
     } else if (!phone) {
-      return res.send({ error: "phone is Required" });
+      return res.send({ message: "phone is Required" });
     } else if (!address) {
-      return res.send({ error: "address is Required" });
+      return res.send({ message: "address is Required" });
     }
 
     //check request type using zod
@@ -40,41 +40,19 @@ const registerController = async (req, res) => {
     //exisiting user
     if (exisitingUser) {
       return res.status(200).send({
-        success: true,
+        success: false,
         message: "Already Register",
       });
     }
 
     //register user
-    const match = await hashPassword(password, user.password);
-    if (!match) {
-      return res.status(200).send({
-        success: false,
-        message: "Invalid Password",
-      });
-    }
-
-    //token
-    const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECERT, {
-      expiresIn: "7d",
-    });
-    res.status(200).send({
-      success: true,
-      message: "login successful",
-      user: {
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        address: user.address,
-      },
-      token,
-    });
+    const match = await hashPassword(password);
 
     //save
     const user = await new userModel({
       name,
       email,
-      password: MyhashedPassword,
+      password: match,
       phone,
       address,
     }).save();
@@ -109,7 +87,7 @@ const loginController = async (req, res) => {
     //check user
     const user = await userModel.findOne({ email });
     if (!user) {
-      return res.status(404).send({
+      return res.status(200).send({
         success: false,
         message: "Email is not registered",
       });
