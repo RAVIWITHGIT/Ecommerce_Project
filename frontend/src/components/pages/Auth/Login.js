@@ -3,8 +3,10 @@ import Layout from "../../Layout/Layout";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../../context/auth";
 
 const Login = () => {
+  const [auth, setAuth] = useAuth();
   const mynav = useNavigate();
 
   const initialvalue = {
@@ -39,6 +41,12 @@ const Login = () => {
       console.log(res);
       if (res && res.data.success) {
         toast.success(res.data && res.data.message);
+        setAuth({
+          ...auth,
+          user: res.data.user,
+          token: res.data.token,
+        });
+        localStorage.setItem("auth", JSON.stringify(res.data));
         mynav("/");
       } else {
         toast.error(res.data.message);

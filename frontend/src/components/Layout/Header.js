@@ -1,213 +1,62 @@
-import React, { useState } from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
-import LocalMallIcon from "@mui/icons-material/LocalMall";
-import AdbIcon from "@mui/icons-material/Adb";
+import React from "react";
 import { NavLink } from "react-router-dom";
 import { LocalMall } from "@mui/icons-material";
-
-const pages = ["HOME", "CATEGORY", "REGISTER", "LOGIN"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+import { useAuth } from "../context/auth";
+import toast from "react-hot-toast";
 
 const Header = () => {
-  const [anchorElNav, setAnchorElNav] = useState(null);
-  const [anchorElUser, setAnchorElUser] = useState(null);
-
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
+  const [auth, setAuth] = useAuth();
+  const handlelogout = () => {
+    setAuth({
+      ...auth,
+      user: null,
+      token: "",
+    });
+    localStorage.removeItem("auth");
+    toast.success("logout Successfully");
   };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
   return (
-    <>
-      <AppBar position="static">
-        <Container maxWidth="xl">
-          <Toolbar disableGutters>
-            <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-            <Typography
-              variant="h6"
-              noWrap
-              component="a"
-              href="#app-bar-with-responsive-menu"
-              sx={{
-                mr: 2,
-                display: { xs: "none", md: "flex" },
-                fontFamily: "monospace",
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "inherit",
-                textDecoration: "none",
-              }}
-            >
-              ECOMMERCE
-            </Typography>
-
-            <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleOpenNavMenu}
-                color="inherit"
-              >
-                <MenuIcon />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorElNav}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "left",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-                open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
-                sx={{
-                  display: { xs: "block", md: "none" },
-                }}
-              >
-                {/* {pages.map((page) => ( */}
-                <MenuItem onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">
-                    <NavLink to="/">HOME</NavLink>
-                  </Typography>
-                </MenuItem>
-                <MenuItem onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">
-                    <NavLink to="/category">CETEGORY</NavLink>
-                  </Typography>
-                </MenuItem>
-                <MenuItem onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">
-                    <NavLink to="/register">REGISTER</NavLink>
-                  </Typography>
-                </MenuItem>
-                <MenuItem onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">
-                    <NavLink to="/login">LOGIN</NavLink>
-                  </Typography>
-                </MenuItem>
-                <MenuItem onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">
-                    <LocalMall />
-                    (0)
-                  </Typography>
-                </MenuItem>
-                {/* // ))} */}
-              </Menu>
-            </Box>
-            <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
-            <Typography
-              variant="h5"
-              noWrap
-              component="a"
-              href="#app-bar-with-responsive-menu"
-              sx={{
-                mr: 2,
-                display: { xs: "flex", md: "none" },
-                flexGrow: 1,
-                fontFamily: "monospace",
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "inherit",
-                textDecoration: "none",
-              }}
-            >
-              ECOMMERCE
-            </Typography>
-            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-              {/* {pages.map((page) => ( */}
-              <Button
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                <NavLink to="/">HOME</NavLink>
-              </Button>
-              <Button
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                <NavLink to="/category">CETEGORY</NavLink>
-              </Button>
-              <Button
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                <NavLink to="/register">REGISTER</NavLink>
-              </Button>
-              <Button
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                <NavLink to="/login">LOGIN</NavLink>
-              </Button>
-              <Button
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                <LocalMall /> (0)
-              </Button>
-              {/* ))} */}
-            </Box>
-
-            <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: "45px" }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>
-          </Toolbar>
-        </Container>
-      </AppBar>
-    </>
+    <div className="shadow-2xl grid lg:grid-cols-4 grid-cols-2 py-3 bg-slate-600">
+      <div className="col-span-2">
+        <h2 className="ms-4 text-lg font-bold">Pooja E-commerce</h2>
+      </div>
+      <div className="list-none flex space-x-3 lg:justify-end justify-start lg:pe-3 ps-3 col-span-2 border border-yellow-900">
+        <li>
+          {" "}
+          <NavLink to="/">HOME</NavLink>
+        </li>
+        <li>
+          {" "}
+          <NavLink to="/category">CETEGORY</NavLink>
+        </li>
+        {!auth.user ? (
+          <>
+            <li>
+              {" "}
+              <NavLink to="/register">REGISTER</NavLink>
+            </li>
+            <li>
+              {" "}
+              <NavLink to="/login">LOGIN</NavLink>
+            </li>
+          </>
+        ) : (
+          <>
+            <li>
+              {" "}
+              <NavLink onClick={handlelogout} to="/login">
+                LOGOUT
+              </NavLink>
+            </li>
+          </>
+        )}
+        <li>
+          {" "}
+          <LocalMall /> (0)
+        </li>
+        {/* </ul> */}
+      </div>
+    </div>
   );
 };
 
