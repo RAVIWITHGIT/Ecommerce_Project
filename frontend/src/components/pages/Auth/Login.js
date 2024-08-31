@@ -1,13 +1,14 @@
 import React, { useReducer } from "react";
 import Layout from "../../Layout/Layout";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/auth";
 
 const Login = () => {
   const [auth, setAuth] = useAuth();
   const mynav = useNavigate();
+  const myLocation = useLocation();
 
   const initialvalue = {
     email: "",
@@ -47,7 +48,8 @@ const Login = () => {
           token: res.data.token,
         });
         localStorage.setItem("auth", JSON.stringify(res.data));
-        mynav("/");
+        console.log(myLocation);
+        mynav(myLocation.state || "/");
       } else {
         toast.error(res.data.message);
       }
